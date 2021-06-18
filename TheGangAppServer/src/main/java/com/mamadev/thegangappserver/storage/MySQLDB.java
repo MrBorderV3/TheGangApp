@@ -1,17 +1,20 @@
 package com.mamadev.thegangappserver.storage;
 
+import com.mamadev.thegangappcore.log.LoggerAdapter;
 import com.mamadev.thegangappcore.log.TheGangLogger;
 import me.border.utilities.database.sql.IMySQLDB;
 
 import java.util.logging.Level;
 
+/**
+ * Class representing the server's MySQL Database. The class is not a singletone by pattern but should only be initialized once.
+ */
 public class MySQLDB extends IMySQLDB {
 
     public MySQLDB(String host, String database, String username, String password, int port) {
         super(host, database, username, password, port);
         if (!isClosed()) {
-            TheGangLogger.log("Successfully connected to MySQL DB at " + "jdbc:mysql://" + host + ":" + port + "/" + database, Level.INFO);
-            System.out.println("Successfully connected to MySQL DB at " + "jdbc:mysql://" + host + ":" + port + "/" + database);
+            LoggerAdapter.log("Successfully connected to MySQL DB at " + "jdbc:mysql://" + host + ":" + port + "/" + database, Level.INFO);
         }
     }
 

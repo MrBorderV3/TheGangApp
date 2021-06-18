@@ -1,5 +1,6 @@
 package com.mamadev.thegangappcore.packet;
 
+import com.mamadev.thegangappcore.log.LoggerAdapter;
 import com.mamadev.thegangappcore.log.TheGangLogger;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -9,6 +10,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * Factory class for easy {@link Packet} creation.
+ */
 public class PacketFactory {
 
     /**
@@ -25,11 +29,9 @@ public class PacketFactory {
      * @return The corresponding {@link Packet}
      */
     public static Packet createPacket(PacketType type, Object... args) {
-        Class<?>[] parameterTypes = new Class<?>[args.length + 1];
-        parameterTypes[0] = type.getClass();
-
+        Class<?>[] parameterTypes = new Class<?>[args.length];
         Arrays.stream(args).collect(Collectors.toList()).forEach(new Consumer<>() {
-            private int counter = 1;
+            private int counter = 0;
 
             @Override
             public void accept(Object o) {
@@ -37,10 +39,11 @@ public class PacketFactory {
                 counter++;
             }
         });
+
         try {
             return PacketType.packetDictionary.get(type).getDeclaredConstructor(parameterTypes).newInstance(args);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e){
-            TheGangLogger.logError("Failed to create a packet!\n" +
+            LoggerAdapter.logSevere("Failed to create a packet!\n" +
                     "Parameter types: " + Arrays.toString(parameterTypes) + "\n" +
                     "Arguments: " + Arrays.toString(args) + "\n" +
                     "Stacktrace: " + ExceptionUtils.getStackTrace(e));

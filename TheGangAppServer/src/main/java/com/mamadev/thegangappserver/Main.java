@@ -2,11 +2,17 @@ package com.mamadev.thegangappserver;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mamadev.thegangappcore.log.LoggerAdapter;
 import com.mamadev.thegangappcore.log.TheGangLogger;
+import com.mamadev.thegangappcore.packet.CeasePacket;
+import com.mamadev.thegangappcore.packet.Packet;
+import com.mamadev.thegangappcore.packet.PacketFactory;
+import com.mamadev.thegangappcore.packet.PacketType;
 import com.mamadev.thegangappserver.constants.Constants;
 import com.mamadev.thegangappserver.storage.MySQLDB;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
@@ -15,6 +21,7 @@ public class Main {
     private static MySQLDB db;
 
     public static void main(String[] args) {
+        TheGangLogger.init(new File(Constants.LOGS_DIRECTORY));
         startDB();
     }
 
@@ -30,12 +37,17 @@ public class Main {
 
             db = new MySQLDB(host, database, username, password, port);
         } catch (FileNotFoundException e) {
-            TheGangLogger.logError("File not found! Path: \"" + Constants.DB_CREDENTIALS_FILE + "\"\n" +
+            LoggerAdapter.logSevere("Database credentials file not found!\n" +
+                    "Path: \"" + Constants.DB_CREDENTIALS_FILE + "\"\n" +
                     "Stacktrace: " + ExceptionUtils.getStackTrace(e));
             System.exit(0);
             return;
         }
 
         db.createCredentialsTable();
+    }
+
+    public static MySQLDB getDB() {
+        return db;
     }
 }
