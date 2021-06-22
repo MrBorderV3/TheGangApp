@@ -6,7 +6,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -43,7 +42,7 @@ public class PacketFactory {
         try {
             return PacketType.packetDictionary.get(type).getDeclaredConstructor(parameterTypes).newInstance(args);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e){
-            LoggerAdapter.logSevere("Failed to create a packet!\n" +
+            LoggerAdapter.logSevere("Failed to create a `" + type.toString() + "` packet!\n" +
                     "Parameter types: " + Arrays.toString(parameterTypes) + "\n" +
                     "Arguments: " + Arrays.toString(args) + "\n" +
                     "Stacktrace: " + ExceptionUtils.getStackTrace(e));
